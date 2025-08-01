@@ -18,9 +18,9 @@ jobs:
     env:
       Solution_Name: MetadataApp.sln
       # The packaging project directory you already fixed
-      Wap_Project_Directory: MetadataApp
+      Wap_Project_Directory: 'MetadataApp (Package)'
       # CHANGE 1: Set the correct path to your .wapproj file
-      Wap_Project_Path: MetadataApp \MetadataApp.wapproj
+      Wap_Project_Path: 'MetadataApp (Package)\MetadataApp (Package).wapproj'
 
     steps:
     - name: Checkout

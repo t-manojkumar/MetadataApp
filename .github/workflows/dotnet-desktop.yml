@@ -29,8 +29,7 @@ jobs:
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
     - name: Build and create the MSIX package
-      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir=".\AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
-
+      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="..\..\AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:

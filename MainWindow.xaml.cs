@@ -61,9 +61,12 @@ namespace MetadataApp
                 // Now, update the UI with the processed data
                 foreach (var info in newImageInfos)
                 {
-                    // Create the thumbnail on the UI thread
-                    info.Thumbnail = new BitmapImage(new Uri(info.FilePath));
-                    loadedImages.Add(info);
+                    if (info.FilePath != null)
+                    {
+                        // Create the thumbnail on the UI thread
+                        info.Thumbnail = new BitmapImage(new Uri(info.FilePath));
+                        loadedImages.Add(info);
+                    }
                 }
 
                 // Select first item and hide progress

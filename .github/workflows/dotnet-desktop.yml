@@ -10,9 +10,6 @@ jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      Solution_Name: MetadataApp.sln
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -22,16 +19,13 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
+    # --- THE FIX: Use the 'dotnet publish' command ---
+    - name: Publish the application
+      run: dotnet publish -f net8.0-windows10.0.19041.0 -c Release -p:AppxPackageSigningEnabled=false
 
-    - name: Restore NuGet packages
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
-
-    - name: Build and create the MSIX package
-      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
-
-    # --- THIS IS THE CRUCIAL DEBUG STEP ---
-    - name: List all files to find the package
-      run: dir /s
-      shell: cmd
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: MSIX Package
+        # This path points to the output of the 'dotnet publish' command
+        path: '**/AppPackages/**/*.msix'

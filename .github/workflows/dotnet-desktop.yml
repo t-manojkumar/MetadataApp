@@ -29,16 +29,12 @@ jobs:
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
     - name: Build and create the MSIX package
-      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
+      # This command does not need to specify an output directory, we will find the output instead
+      run: msbuild $env:Solution_Name /p:Configuration=Release /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
 
-    # --- NEW DEBUG STEP ---
-    - name: List all files to find the package
-      run: dir /s
-      shell: cmd
-
-    # The upload step is temporarily disabled while we debug
-    # - name: Upload build artifacts
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: MSIX Package
-    #     path: '**/AppPackages/**/*.msix'
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: MSIX Package
+        # This is the correct path discovered from your build log
+        path: '**/bin/**/AppPackages/**/*.msix'

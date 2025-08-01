@@ -12,7 +12,7 @@ jobs:
 
     env:
       Solution_Name: MetadataApp.sln
-      
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -29,12 +29,12 @@ jobs:
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
     - name: Build and create the MSIX package
-      # This command now outputs the package to a predictable 'dist' folder
-      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="dist" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
+      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
 
+    # --- THE FINAL FIX ---
     - name: Upload build artifacts
-      # The upload action now looks in that same 'dist' folder
       uses: actions/upload-artifact@v4
       with:
         name: MSIX Package
-        path: dist/**/*.msix
+        # This path searches all sub-folders to find the AppPackages directory.
+        path: '**/AppPackages/**/*.msix'

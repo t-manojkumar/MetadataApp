@@ -16,7 +16,7 @@ namespace MetadataApp
     {
         public BitmapImage? Thumbnail { get; set; }
         public string? Metadata { get; set; }
-        public string FilePath { get; set; } // Store path for thumbnail creation
+        public string? FilePath { get; set; } // Store path for thumbnail creation
     }
 
     public sealed partial class MainWindow : Window

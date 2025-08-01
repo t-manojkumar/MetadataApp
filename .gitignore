@@ -12,3 +12,6 @@
 
 # User-specific files
 *.DotSettings.user
+
+# Certificate files
+*.pfx

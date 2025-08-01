@@ -9,8 +9,8 @@
 
   <Identity
     Name="8c83fee7-3d4c-437d-a709-e05ee5d535a9"
-    Publisher="CN=tvman"
-    Version="1.0.0.0" />
+    Publisher="CN=manojtv"
+    Version="0.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="8c83fee7-3d4c-437d-a709-e05ee5d535a9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

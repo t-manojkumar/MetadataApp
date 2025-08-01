@@ -1,5 +1,4 @@
-# This workflow will build, test, sign and package a WinUI 3 desktop application.
-name: .NET Core Desktop
+name: .NET Core Desktop Build
 
 on:
   push:
@@ -9,24 +8,16 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        configuration: [Release] # It's best practice to only build 'Release' for CI
-
     runs-on: windows-latest
 
     env:
       Solution_Name: MetadataApp.sln
-      # The packaging project directory you already fixed
-      Wap_Project_Directory: 'MetadataApp (Package)'
-      # CHANGE 1: Set the correct path to your .wapproj file
-      Wap_Project_Path: 'MetadataApp (Package)\MetadataApp (Package).wapproj'
+      # The main project's path
+      App_Project_Path: MetadataApp\MetadataApp.csproj
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
@@ -36,26 +27,15 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
-    # CHANGE 2: The 'Execute unit tests' step has been removed.
-
     - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+    # This step now builds the main project directly to create the package
+    - name: Build the application and create package
+      run: msbuild $env:App_Project_Path /p:Configuration=Release /p:AppxPackageDir="..\AppPackages" /p:AppxPackageSigningEnabled=false
 
-    - name: Create the app package
-      run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxBundle=Always /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword="${{ secrets.Pfx_Key }}"
-      env:
-        Configuration: ${{ matrix.configuration }}
-    
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: MSIX Package
-        path: ${{ env.Wap_Project_Directory }}\AppPackages
+        path: AppPackages

@@ -19,10 +19,14 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    # This is the modern command to build and package a WinUI 3 app
     - name: Publish the application
       run: dotnet publish -f net8.0-windows10.0.19041.0 -c Release -p:AppxPackageSigningEnabled=false
 
-    # --- THIS IS THE ONLY STEP THAT MATTERS NOW ---
-    - name: List all files to find the package
-      run: dir /s
-      shell: cmd
+    # --- THE FINAL FIX ---
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: MSIX Package
+        # This is the correct path discovered from your build log
+        path: '**/bin/**/publish/**/*.msix'

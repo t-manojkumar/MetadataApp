@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MetadataApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MetadataApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

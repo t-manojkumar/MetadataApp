@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Rider
+.idea/
+
+# User-specific files
+*.DotSettings.user

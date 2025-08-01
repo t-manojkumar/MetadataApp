@@ -12,6 +12,8 @@ jobs:
 
     env:
       Solution_Name: MetadataApp.sln
+      # Define a reliable, absolute path for the output package
+      Package_Output_Path: ${{ github.workspace }}\AppPackages
 
     steps:
     - name: Checkout
@@ -29,9 +31,12 @@ jobs:
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
     - name: Build and create the MSIX package
-      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="..\..\AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
+      # This command now uses the absolute path variable
+      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir="${{ env.Package_Output_Path }}" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
+
     - name: Upload build artifacts
+      # The upload action now looks in that same reliable path
       uses: actions/upload-artifact@v4
       with:
         name: MSIX Package
-        path: AppPackages/**/*.msix
+        path: ${{ env.Package_Output_Path }}\**\*.msix

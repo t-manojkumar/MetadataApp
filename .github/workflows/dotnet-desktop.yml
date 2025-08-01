@@ -12,8 +12,6 @@ jobs:
 
     env:
       Solution_Name: MetadataApp.sln
-      # The main project's path
-      App_Project_Path: MetadataApp\MetadataApp.csproj
 
     steps:
     - name: Checkout
@@ -27,12 +25,11 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
-    - name: Restore the application
+    - name: Restore NuGet packages
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
-    # This step now builds the main project directly to create the package
-    - name: Build the application and create package
-      run: msbuild $env:App_Project_Path /p:Configuration=Release /p:AppxPackageDir="..\AppPackages" /p:AppxPackageSigningEnabled=false
+    - name: Build and create the MSIX package
+      run: msbuild $env:Solution_Name /p:Configuration=Release /p:AppxPackageDir=".\AppPackages" /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
